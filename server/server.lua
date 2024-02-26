@@ -30,7 +30,6 @@ end
 local VORPcore = exports.vorp_core:GetCore()
 
 exports.vorp_inventory:registerUsableItem(Config.PumpItem, function(data)
-    print(Config.PumpItem)
     local src = data.source
     local Character = VORPcore.getUser(src).getUsedCharacter
     local identifier = Character.identifier

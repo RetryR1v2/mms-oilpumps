@@ -378,7 +378,6 @@ end)
 
 RegisterNetEvent('FeatherMenu:opened', function(menudata)
     if menudata.menuid == 'PumpMenu' then
-        print ('open')
         PumpMenuOpen = true
     end
 end)
@@ -386,7 +385,6 @@ end)
 RegisterNetEvent('FeatherMenu:closed', function(menudata)
     if menudata.menuid == 'PumpMenu' then
         PumpMenuOpen = false
-        print ('close')
     end
 end)
 
@@ -403,11 +401,8 @@ RegisterNetEvent('mms-oilpumps:client:updateoil')
 AddEventHandler('mms-oilpumps:client:updateoil',function()
     while SpawnedPump do
         Citizen.Wait(5000)
-        print ('Update1')
         if PumpMenuOpen then
-            print ('Update2')
             local oilamount =  VORPcore.Callback.TriggerAwait('mms-oilpumps:callback:getoilfromdb')
-            print (oilamount)
             OilAmount:update({
                 value = _U('OilAmount') .. oilamount .. _U('Oil'),
                 style = {}
