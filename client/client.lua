@@ -400,7 +400,7 @@ end)
 RegisterNetEvent('mms-oilpumps:client:updateoil')
 AddEventHandler('mms-oilpumps:client:updateoil',function()
     while SpawnedPump do
-        Citizen.Wait(5000)
+        Citizen.Wait(3000)
         if PumpMenuOpen then
             local oilamount =  VORPcore.Callback.TriggerAwait('mms-oilpumps:callback:getoilfromdb')
             OilAmount:update({
