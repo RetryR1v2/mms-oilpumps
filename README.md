@@ -19,6 +19,7 @@ Full Rewrite
 # Changelog
 
 - 1.1.2  Full Rewrite
+- 1.1.3 Added En_lang from @Maker
 
 # installation 
 
