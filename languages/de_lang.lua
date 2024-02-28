@@ -29,4 +29,13 @@ Locales["de_lang"] = {
     TakeOutPump = 'Du holst ',
     TakeOutPump2 = ' Öl aus der Pumpe!',
     NotEnoghOil = 'Nicht genug Öl in der Pumpe!',
+    --- New
+    PLevel = 'Pumpen Level: ',
+    PRate = ' Produktionsrate: ',
+    All = ' Öl Alle ',
+    PTime = ' Sekunden',
+    UpgradePump = 'Pumpe Erweitern',
+    AlreadyMaxLevel = 'Pumpe hat Bereits das Höchste Level',
+    Upgraded = 'Pumpe Erfolgreich Erweitert',
+    PUPrice = 'Nächstes Upgrade kostet: ',
 }

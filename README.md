@@ -15,11 +15,16 @@ Full Rewrite
 - Cleaned Config File
 - Removed Crafting you Can add the Oil Item in your Vorp_Crafting or any other Crafting System The Crafting from @Fistsofury dor Example 
 - You Can Now name your Pump its Also the Name of your Pumps Blip
+- You can now Use a Level system for players to Upgrade their Pumps
 
 # Changelog
 
 - 1.1.2  Full Rewrite
 - 1.1.3 Added En_lang from @Maker
+- 1.1.4 Added Level System
+- Changed Label Update to Menu Open Trigger It Updates Oil Amount and Stuff on Menu Open
+- Cleaned Code Better Performance
+- If you used Version 1.1.3 you need to Replace the Database or Add Missing Tables 
 
 # installation 
 

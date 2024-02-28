@@ -34,6 +34,43 @@ Config.PumpBlip = true
 Config.PumpBlipSprite= 'blip_donate_food'
 Config.PumpBlipScale = 5.0
 
+-------------------- Level System
+
+Config.UseLevelSystem = true
+
+Config.Levels = {
+    {
+        Level = 1,          ---- Level 1
+        PRate = 3,          ---- Amount Oil this Level Produce Fix Amount Not Added 
+        Price = 100,        ---- Price to Buy Pump Level 1 
+        PTime = 60,         ---- Time in Sec this Level Produce Oil
+    },
+    {
+        Level = 2,
+        PRate = 6,
+        Price = 150,        ---- Price Upgrade Costs
+        PTime = 50,
+    },
+    {
+        Level = 3,
+        PRate = 9,
+        Price = 200,
+        PTime = 40,
+    },
+    {
+        Level = 4,
+        PRate = 12,
+        Price = 250,
+        PTime = 30,
+    },
+    {
+        Level = 5,
+        PRate = 15,
+        Price = 300,
+        PTime = 20,
+    },
+}
+
 
 ------------------------- Config  Town Distance
 

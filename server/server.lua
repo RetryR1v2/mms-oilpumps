@@ -35,10 +35,10 @@ exports.vorp_inventory:registerUsableItem(Config.PumpItem, function(data)
     local identifier = Character.identifier
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
         if result[1] ~= nil then
-            exports.vorp_inventory:subItem(src, Config.PumpItem, 1, nil,nil)
-            local pumpname = result[1].pumpname
-            Citizen.Wait(500)
-            TriggerClientEvent('mms-oilpumps:client:spawnpumpitem',src,pumpname)
+                exports.vorp_inventory:subItem(src, Config.PumpItem, 1, nil,nil)
+                local pumpname = result[1].pumpname
+                Citizen.Wait(500)
+                TriggerClientEvent('mms-oilpumps:client:spawnpumpitem',src,pumpname)
         else
             VORPcore.NotifyTip(src, _U('AlreadyGotPump'), 5000)
         end
@@ -54,21 +54,45 @@ RegisterServerEvent('mms-oilpumps:server:buypump',function(PumpName)
     local lastname = Character.lastname
     local stash = 0
     local Money = Character.money
-    MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
-        if result[1] ~= nil then
-            VORPcore.NotifyTip(src, _U('AlreadyGotPump'), 5000)
-        else
-            if Money >= Config.PumpPrice then
-                VORPcore.NotifyTip(src, _U('PumpBought'), 5000)
-                Character.removeCurrency(0,Config.PumpPrice)
-                exports.vorp_inventory:addItem(src, Config.PumpItem, 1, nil,nil)
-                MySQL.insert('INSERT INTO `mms_oilpumps` (identifier,firstname,lastname,pumpname,stash) VALUES (?, ?, ?, ?, ?)',
-                {identifier,firstname,lastname,PumpName,stash}, function()end)
+    if Config.UseLevelSystem then
+        local Level1 = Config.Levels[1]
+        local Price = Level1.Price
+        local Level = Level1.Level
+        local PRate = Level1.PRate
+        local PTime = Level1.PTime
+        MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
+            if result[1] ~= nil then
+                VORPcore.NotifyTip(src, _U('AlreadyGotPump'), 5000)
             else
-                VORPcore.NotifyTip(src, _U('NotEnoghMoney'), 5000)
+                if Money >= Price then
+                    VORPcore.NotifyTip(src, _U('PumpBought'), 5000)
+                    Character.removeCurrency(0,Price)
+                    exports.vorp_inventory:addItem(src, Config.PumpItem, 1, nil,nil)
+                    MySQL.insert('INSERT INTO `mms_oilpumps` (identifier,firstname,lastname,pumpname,stash,pumplevel,prate,ptime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    {identifier,firstname,lastname,PumpName,stash,Level,PRate,PTime}, function()end)
+                else
+                    VORPcore.NotifyTip(src, _U('NotEnoghMoney'), 5000)
+                end
             end
-        end
-    end) 
+        end)
+    else
+        MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
+            if result[1] ~= nil then
+                VORPcore.NotifyTip(src, _U('AlreadyGotPump'), 5000)
+            else
+                if Money >= Config.PumpPrice then
+                    VORPcore.NotifyTip(src, _U('PumpBought'), 5000)
+                    Character.removeCurrency(0,Config.PumpPrice)
+                    exports.vorp_inventory:addItem(src, Config.PumpItem, 1, nil,nil)
+                    MySQL.insert('INSERT INTO `mms_oilpumps` (identifier,firstname,lastname,pumpname,stash) VALUES (?, ?, ?, ?, ?)',
+                    {identifier,firstname,lastname,PumpName,stash}, function()end)
+                else
+                    VORPcore.NotifyTip(src, _U('NotEnoghMoney'), 5000)
+                end
+            end
+        end)
+    end
+
 end)
 
 
@@ -107,6 +131,51 @@ VORPcore.Callback.Register('mms-oilpumps:callback:getoilfromdb', function(source
         else
             oilamount = 0
             cb(oilamount)
+        end
+    end)
+end)
+
+VORPcore.Callback.Register('mms-oilpumps:callback:getpumplevelfromdb', function(source,cb)
+    local src = source
+    local Character = VORPcore.getUser(src).getUsedCharacter
+    local identifier = Character.identifier
+    MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
+        if result[1] ~= nil then
+            pumplevel = result[1].pumplevel
+            cb(pumplevel)
+        else
+            pumplevel = 0
+            cb(pumplevel)
+        end
+    end)
+end)
+
+VORPcore.Callback.Register('mms-oilpumps:callback:getpratefromdb', function(source,cb)
+    local src = source
+    local Character = VORPcore.getUser(src).getUsedCharacter
+    local identifier = Character.identifier
+    MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
+        if result[1] ~= nil then
+            prate = result[1].prate
+            cb(prate)
+        else
+            prate = 0
+            cb(prate)
+        end
+    end)
+end)
+
+VORPcore.Callback.Register('mms-oilpumps:callback:getptimefromdb', function(source,cb)
+    local src = source
+    local Character = VORPcore.getUser(src).getUsedCharacter
+    local identifier = Character.identifier
+    MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
+        if result[1] ~= nil then
+            ptime = result[1].ptime
+            cb(ptime)
+        else
+            ptime = 0
+            cb(ptime)
         end
     end)
 end)
@@ -167,6 +236,24 @@ RegisterServerEvent('mms-oilpumps:server:CheckforPump',function()
     end)
 end)
 
+RegisterServerEvent('mms-oilpumps:server:UpgradePump',function (newlevel,newrate,newtime,upgradeprice)
+    local src = source
+    local Character = VORPcore.getUser(src).getUsedCharacter
+    local identifier = Character.identifier
+    local Money = Character.money
+    
+    MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
+    if result[1] ~= nil then
+        if Money >= upgradeprice then
+            MySQL.update('UPDATE `mms_oilpumps` SET pumplevel = ?,prate = ?,ptime = ? WHERE identifier = ?',{newlevel,newrate,newtime,identifier})
+            VORPcore.NotifyTip(src, _U('Upgraded'), 5000)
+            Character.removeCurrency(0,upgradeprice)
+        else
+            VORPcore.NotifyTip(src, _U('NotEnoghMoney'), 5000)
+        end
+    end
+end)
+end)
 
 --------------------------------------------------------------------------------------------------
 -- start version check

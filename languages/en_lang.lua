@@ -28,5 +28,14 @@ Locales["en_lang"] = {
     NotEnoghSpace = 'Your bag is too full',
     TakeOutPump = 'You took ',
     TakeOutPump2 = ' oil from the pump!',
-    NotEnoghOil = 'Not enough oil in the pump!'
+    NotEnoghOil = 'Not enough oil in the pump!',
+    --- New
+    PLevel = 'Pumpen Level: ',
+    PRate = ' Produktionsrate: ',
+    All = ' Öl Alle ',
+    PTime = ' Sekunden',
+    UpgradePump = 'Pumpe Erweitern',
+    AlreadyMaxLevel = 'Pumpe hat Bereits das Höchste Level',
+    Upgraded = 'Pumpe Erfolgreich Erweitert',
+    PUPrice = 'Nächstes Upgrade kostet: ',
     }

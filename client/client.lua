@@ -8,7 +8,6 @@ local FeatherMenu =  exports['feather-menu'].initiate()
 
 
 local SpawnedPump = false
-local PumpMenuOpen = false
 
 RegisterNetEvent('vorp:SelectedCharacter')
 AddEventHandler('vorp:SelectedCharacter', function()
@@ -88,12 +87,23 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
                 ['color'] = 'orange',
             }
         })
+        if Config.UseLevelSystem then
+            local Level1 = Config.Levels[1]
+
+            PumpenInfo = PumpShopMenuPage1:RegisterElement('textdisplay', {
+                value = _U('Costs') ..Level1.Price.. _U('Dollarand').. Level1.PRate .._U('OilAll') .. Level1.PTime .. _U('Sec'),
+                style = {
+                    ['color'] = 'orange',
+                }
+            })
+        else
         PumpenInfo = PumpShopMenuPage1:RegisterElement('textdisplay', {
             value = _U('Costs') ..Config.PumpPrice.. _U('Dollarand').. Config.AddOil .._U('OilAll') .. Config.WorkTime .. _U('Sec'),
             style = {
                 ['color'] = 'orange',
             }
         })
+        end
         PumpShopMenuPage1:RegisterElement('button', {
             label = _U('BuyPump'),
             style = {
@@ -171,6 +181,20 @@ Citizen.CreateThread(function()
                 ['color'] = 'orange',
             }
         })
+        if Config.UseLevelSystem then
+        PumpLevel = PumpMenuPage1:RegisterElement('textdisplay', {
+            value = _U('PLevel'),
+            style = {
+                ['color'] = 'orange',
+            }
+        })
+        NextPrice = PumpMenuPage1:RegisterElement('textdisplay', {
+            value = _U('PUPrice'),
+            style = {
+                ['color'] = 'orange',
+            }
+        })
+    end
         PumpMenuPage1:RegisterElement('button', {
             label = _U('TakeOil'),
             style = {
@@ -181,6 +205,18 @@ Citizen.CreateThread(function()
         }, function()
             TriggerEvent('mms-oilpumps:client:TakeOil')
         end)
+        if Config.UseLevelSystem then
+            PumpMenuPage1:RegisterElement('button', {
+                label = _U('UpgradePump'),
+                style = {
+                    ['background-color'] = '#FF8C00',
+                    ['color'] = 'orange',
+                    ['border-radius'] = '6px'
+                },
+            }, function()
+                TriggerEvent('mms-oilpumps:client:UpgradePump')
+            end)
+        end
         PumpMenuPage1:RegisterElement('button', {
             label = _U('DeletePump'),
             style = {
@@ -250,6 +286,35 @@ AddEventHandler('mms-oilpumps:client:buypump',function ()
     end)
 end)
 
+RegisterNetEvent('mms-oilpumps:client:UpgradePump')
+AddEventHandler('mms-oilpumps:client:UpgradePump',function()
+    Citizen.Wait(1000)
+    local getpumplevel =  VORPcore.Callback.TriggerAwait('mms-oilpumps:callback:getpumplevelfromdb')
+    local MaxLevel = #Config.Levels
+    local Upgraded = false
+    for n,v in ipairs(Config.Levels) do
+        if Upgraded == false then
+            if getpumplevel < MaxLevel then
+                if getpumplevel < v.Level then
+                    Upgraded = true
+                    local newlevel = v.Level
+                    local newrate = v.PRate
+                    local newtime = v.PTime
+                    local upgradeprice = v.Price
+                    TriggerServerEvent('mms-oilpumps:server:UpgradePump',newlevel,newrate,newtime,upgradeprice)
+                    PumpMenu:Close({ 
+                    })
+                end
+            else
+                VORPcore.NotifyTip(_U('AlreadyMaxLevel'), 5000)
+            end
+        end
+    end
+    Upgraded = false
+end)
+
+
+
 
 RegisterNetEvent('mms-oilpumps:client:spawnpumpitem')
 AddEventHandler('mms-oilpumps:client:spawnpumpitem', function(pumpname)
@@ -273,7 +338,6 @@ AddEventHandler('mms-oilpumps:client:spawnpumpitem', function(pumpname)
     SetModelAsNoLongerNeeded(modelHash)
     local PumpCoords = GetEntityCoords(PumpObject)
     SpawnedPump = true
-
     if Config.PumpBlip then
         PumpBlip = BccUtils.Blips:SetBlip(pumpname, Config.PumpBlipSprite, Config.PumpBlipScale, PumpCoords.x,PumpCoords.y,PumpCoords.z)
     end
@@ -287,9 +351,7 @@ AddEventHandler('mms-oilpumps:client:spawnpumpitem', function(pumpname)
     Citizen.Wait(1000)
     TriggerEvent('mms-oilpumps:client:PumpPrompt',PumpCoords,pumpname)
     Citizen.Wait(1000)
-    TriggerEvent('mms-oilpumps:client:updateoil')
-    Citizen.Wait(1000)
-    TriggerEvent('mms-oilpumps:client:workoil')
+        TriggerEvent('mms-oilpumps:client:workoil')
         else
             VORPcore.NotifyTip(_U('OnlyOilField'), 5000)
             TriggerServerEvent('mms-oilpumps:server:givebackpumpitem')
@@ -329,7 +391,6 @@ AddEventHandler('mms-oilpumps:client:spawnpumpitem', function(pumpname)
     SetModelAsNoLongerNeeded(modelHash)
     local PumpCoords = GetEntityCoords(PumpObject)
     SpawnedPump = true
-
     if Config.PumpBlip then
         PumpBlip = BccUtils.Blips:SetBlip(pumpname, Config.PumpBlipSprite, Config.PumpBlipScale, PumpCoords.x,PumpCoords.y,PumpCoords.z)
     end
@@ -343,9 +404,7 @@ AddEventHandler('mms-oilpumps:client:spawnpumpitem', function(pumpname)
     Citizen.Wait(1000)
     TriggerEvent('mms-oilpumps:client:PumpPrompt',PumpCoords,pumpname)
     Citizen.Wait(1000)
-    TriggerEvent('mms-oilpumps:client:updateoil')
-    Citizen.Wait(1000)
-    TriggerEvent('mms-oilpumps:client:workoil')
+        TriggerEvent('mms-oilpumps:client:workoil')
     else
         VORPcore.NotifyTip(_U('NotNearTown'), 5000)
         TriggerServerEvent('mms-oilpumps:server:givebackpumpitem')
@@ -378,38 +437,71 @@ end)
 
 RegisterNetEvent('FeatherMenu:opened', function(menudata)
     if menudata.menuid == 'PumpMenu' then
-        PumpMenuOpen = true
-    end
-end)
-
-RegisterNetEvent('FeatherMenu:closed', function(menudata)
-    if menudata.menuid == 'PumpMenu' then
-        PumpMenuOpen = false
-    end
-end)
-
-RegisterNetEvent('mms-oilpumps:client:workoil')
-AddEventHandler('mms-oilpumps:client:workoil',function()
-    while SpawnedPump do
-        local oil = Config.AddOil
-        TriggerServerEvent('mms-oilpumps:server:AddOiltoDB', oil)
-        Citizen.Wait(Config.WorkTime * 1000)
-     end
-end)
-
-RegisterNetEvent('mms-oilpumps:client:updateoil')
-AddEventHandler('mms-oilpumps:client:updateoil',function()
-    while SpawnedPump do
-        Citizen.Wait(3000)
-        if PumpMenuOpen then
             local oilamount =  VORPcore.Callback.TriggerAwait('mms-oilpumps:callback:getoilfromdb')
             OilAmount:update({
                 value = _U('OilAmount') .. oilamount .. _U('Oil'),
                 style = {}
             })
+            Citizen.Wait(100)
+            if Config.UseLevelSystem then
+            local pumplevel =  VORPcore.Callback.TriggerAwait('mms-oilpumps:callback:getpumplevelfromdb')
+            local pumprate = VORPcore.Callback.TriggerAwait('mms-oilpumps:callback:getpratefromdb')
+            local pumptime = VORPcore.Callback.TriggerAwait('mms-oilpumps:callback:getptimefromdb')
+            PumpLevel:update({
+                value = _U('PLevel') .. pumplevel .. _U('PRate') .. pumprate .. _U('All') .. pumptime .._U('PTime'),
+                style = {}
+            })
+            local nextlevel = false
+            local getpumplevel =  VORPcore.Callback.TriggerAwait('mms-oilpumps:callback:getpumplevelfromdb')
+            local MaxLevel = #Config.Levels
+            for n,v in ipairs(Config.Levels) do
+                if nextlevel == false then
+                    if getpumplevel < MaxLevel then
+                        if getpumplevel < v.Level then
+                            nextlevel = true
+                            nextprice = v.Price
+                            NextPrice:update({
+                                value = _U('PUPrice') .. nextprice .. ' $',
+                                style = {}
+                            })
+                        end
+                    else
+                        NextPrice:update({
+                        value = _U('AlreadyMaxLevel'),
+                        style = {}
+                        })
+                    end
+                end
+            end
+        nextlevel = false
         end
     end
 end)
+
+RegisterNetEvent('FeatherMenu:closed', function(menudata)
+    if menudata.menuid == 'PumpMenu' then
+    end
+end)
+
+
+RegisterNetEvent('mms-oilpumps:client:workoil')
+AddEventHandler('mms-oilpumps:client:workoil',function()
+    while SpawnedPump do
+        if Config.UseLevelSystem then
+            local pumprate = VORPcore.Callback.TriggerAwait('mms-oilpumps:callback:getpratefromdb')
+            local pumptime = VORPcore.Callback.TriggerAwait('mms-oilpumps:callback:getptimefromdb')
+            local oil = pumprate
+            TriggerServerEvent('mms-oilpumps:server:AddOiltoDB', oil)
+            Citizen.Wait(pumptime * 1000)
+        else
+            local oil = Config.AddOil
+            TriggerServerEvent('mms-oilpumps:server:AddOiltoDB', oil)
+            Citizen.Wait(Config.WorkTime * 1000)
+        end
+     end
+    Citizen.Wait(1000)
+end)
+
 
 RegisterNetEvent('mms-oilpumps:client:DeletePump')
 AddEventHandler('mms-oilpumps:client:DeletePump',function()
@@ -451,11 +543,6 @@ end)
 
 RegisterNetEvent('mms-oilpumps:client:spawnpumponplayerjoin')
 AddEventHandler('mms-oilpumps:client:spawnpumponplayerjoin',function(posx,posy,posz,pumpname)
-    local MyCoords = GetEntityCoords(PlayerPedId())
-    if Config.OnlyOilField then 
-        local oilfields = Config.Oilfield
-        local distanceoilfield = #(MyCoords - oilfields)
-        if distanceoilfield <= Config.RadiusAround then
             local modelHash = GetHashKey(Config.Model)
 	        while not HasModelLoaded(modelHash) do
 		    RequestModel(modelHash)
@@ -471,7 +558,6 @@ AddEventHandler('mms-oilpumps:client:spawnpumponplayerjoin',function(posx,posy,p
     SetModelAsNoLongerNeeded(modelHash)
     local PumpCoords = GetEntityCoords(PumpObject)
     SpawnedPump = true
-
     if Config.PumpBlip then
         PumpBlip = BccUtils.Blips:SetBlip(pumpname, Config.PumpBlipSprite, Config.PumpBlipScale, PumpCoords.x,PumpCoords.y,PumpCoords.z)
     end
@@ -480,65 +566,7 @@ AddEventHandler('mms-oilpumps:client:spawnpumponplayerjoin',function(posx,posy,p
     Citizen.Wait(1000)
     TriggerEvent('mms-oilpumps:client:PumpPrompt',PumpCoords,pumpname)
     Citizen.Wait(1000)
-    TriggerEvent('mms-oilpumps:client:updateoil')
-    Citizen.Wait(1000)
     TriggerEvent('mms-oilpumps:client:workoil')
-        else
-            VORPcore.NotifyTip(_U('OnlyOilField'), 5000)
-            TriggerServerEvent('mms-oilpumps:server:givebackpumpitem')
-        end
-    elseif Config.NotNearTowns then
-    local valentine = Config.TownValentine
-    local rhodes = Config.TownRhodes
-    local strawberry = Config.TownStrawberry
-    local blackwater = Config.TownBlackwater
-    local annesburg = Config.TownAnnesburg
-    local vanhorn = Config.TownVanhorn
-    local saintdenise = Config.TownSaintdenise
-    local tumbleweed = Config.TownTumbleweed
-    local armadillo = Config.TownArmadillo
-    local distancevalentine = #(MyCoords - valentine)
-    local distancerhodes = #(MyCoords - rhodes)
-    local distancestrawberry = #(MyCoords - strawberry)
-    local distanceblackwater = #(MyCoords - blackwater)
-    local distanceannesburg = #(MyCoords - annesburg)
-    local distancevanhorn = #(MyCoords - vanhorn)
-    local distancesaintdenise = #(MyCoords - saintdenise)
-    local distancetumbleweed = #(MyCoords - tumbleweed)
-    local distancearmadillo = #(MyCoords - armadillo)
-        if distancevalentine and distancerhodes and distancestrawberry and distanceblackwater and distanceannesburg and distancevanhorn and distancesaintdenise and distancetumbleweed and distancearmadillo <= Config.TownDistanceNeeded then
-            local modelHash = GetHashKey(Config.Model)
-	        while not HasModelLoaded(modelHash) do
-		    RequestModel(modelHash)
-		    Citizen.Wait(0)
-	        end
-
-    PumpObject = CreateObject(modelHash, posx +1 , posy +1 , posz -1, true, false, false) 
-    isSpawned = true
-    PlaceObjectOnGroundProperly(PumpObject)
-    SetEntityAsMissionEntity(PumpObject,true,true)
-    Wait(200)
-    FreezeEntityPosition(PumpObject,true)
-    SetModelAsNoLongerNeeded(modelHash)
-    local PumpCoords = GetEntityCoords(PumpObject)
-    SpawnedPump = true
-
-    if Config.PumpBlip then
-        PumpBlip = BccUtils.Blips:SetBlip(pumpname, Config.PumpBlipSprite, Config.PumpBlipScale, PumpCoords.x,PumpCoords.y,PumpCoords.z)
-    end
-
-    
-    Citizen.Wait(1000)
-    TriggerEvent('mms-oilpumps:client:PumpPrompt',PumpCoords,pumpname)
-    Citizen.Wait(1000)
-    TriggerEvent('mms-oilpumps:client:updateoil')
-    Citizen.Wait(1000)
-    TriggerEvent('mms-oilpumps:client:workoil')
-    else
-        VORPcore.NotifyTip(_U('NotNearTown'), 5000)
-        TriggerServerEvent('mms-oilpumps:server:givebackpumpitem')
-    end
-end
 end)
 
 ----- Cleaup on Resource Restart
