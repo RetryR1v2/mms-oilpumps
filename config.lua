@@ -2,6 +2,8 @@ Config = {}
 
 Config.defaultlang = "de_lang" -- Set Language (Current Languages: "de_lang" German)
 
+Config.Debug = false
+
 -------------- Prompt Settings
 
 Config.PumpTraderBlip = true

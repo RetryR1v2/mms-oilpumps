@@ -25,6 +25,7 @@ Full Rewrite
 - Changed Label Update to Menu Open Trigger It Updates Oil Amount and Stuff on Menu Open
 - Cleaned Code Better Performance
 - If you used Version 1.1.3 you need to Replace the Database or Add Missing Tables 
+- 1.1.5 Fixed PedError ( Update Config and Client.lua  Added Config.Debug = false)
 
 # installation 
 

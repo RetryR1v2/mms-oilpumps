@@ -569,6 +569,8 @@ AddEventHandler('mms-oilpumps:client:spawnpumponplayerjoin',function(posx,posy,p
     TriggerEvent('mms-oilpumps:client:workoil')
 end)
 
+
+if Config.Debug then
 ----- Cleaup on Resource Restart
 
 RegisterNetEvent('onResourceStop',function()
@@ -582,6 +584,7 @@ RegisterNetEvent('onResourceStop',function()
     end
     SpawnedPump = false
 end)
+end
 
 
 
