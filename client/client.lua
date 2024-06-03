@@ -59,7 +59,7 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
                 ['720width'] = '500px',
                 ['1080width'] = '700px',
                 ['2kwidth'] = '700px',
-                ['4kwidth'] = '8000px',
+                ['4kwidth'] = '800px',
                 style = {
                     ['border'] = '5px solid orange',
                     -- ['background-image'] = 'none',
@@ -72,7 +72,18 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
                     }
                 },
                 draggable = true,
-            })
+    --canclose = false
+}, {
+    opened = function()
+        --print("MENU OPENED!")
+    end,
+    closed = function()
+        --print("MENU CLOSED!")
+    end,
+    topage = function(data)
+        --print("PAGE CHANGED ", data.pageid)
+    end
+})
         PumpShopMenuPage1 = PumpShopMenu:RegisterPage('pumpenseite1')
         PumpShopMenuPage1:RegisterElement('header', {
             value = _U('TraderMenuLabel'),
@@ -147,7 +158,7 @@ Citizen.CreateThread(function()
         ['720width'] = '500px',
         ['1080width'] = '700px',
         ['2kwidth'] = '700px',
-        ['4kwidth'] = '8000px',
+        ['4kwidth'] = '800px',
         style = {
             ['border'] = '5px solid orange',
             -- ['background-image'] = 'none',
@@ -549,7 +560,7 @@ AddEventHandler('mms-oilpumps:client:spawnpumponplayerjoin',function(posx,posy,p
 		    Citizen.Wait(0)
 	        end
 
-            PumpObject = CreateObject(modelHash, posx +1 , posy +1 , posz -1, true, false, false)
+            PumpObject = CreateObject(modelHash, posx, posy, posz, true, false, false)
     isSpawned = true
     PlaceObjectOnGroundProperly(PumpObject)
     SetEntityAsMissionEntity(PumpObject,true,true)
