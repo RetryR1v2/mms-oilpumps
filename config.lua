@@ -35,6 +35,7 @@ Config.WorkTime = 10    ---------------- Time in Sek
 Config.PumpBlip = true
 Config.PumpBlipSprite= 'blip_donate_food'
 Config.PumpBlipScale = 5.0
+Config.MaxStash = 250
 
 -------------------- Level System
 
