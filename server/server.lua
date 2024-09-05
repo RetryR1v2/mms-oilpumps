@@ -32,7 +32,7 @@ local VORPcore = exports.vorp_core:GetCore()
 exports.vorp_inventory:registerUsableItem(Config.PumpItem, function(data)
     local src = data.source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
         if result[1] ~= nil then
                 exports.vorp_inventory:subItem(src, Config.PumpItem, 1, nil,nil)
@@ -49,7 +49,7 @@ end)
 RegisterServerEvent('mms-oilpumps:server:buypump',function(PumpName)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     local firstname = Character.firstname
     local lastname = Character.lastname
     local stash = 0
@@ -99,7 +99,7 @@ end)
 RegisterServerEvent('mms-oilpumps:server:placepumpfirsttime',function(posx,posy,posz)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
         if result[1] ~= nil then
             MySQL.update('UPDATE `mms_oilpumps` SET  posx = ?, posy = ?, posz = ? WHERE identifier = ?',{posx,posy,posz,identifier})
@@ -110,7 +110,7 @@ end)
 RegisterServerEvent('mms-oilpumps:server:AddOiltoDB',function(oil)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
         if result[1] ~= nil then
             local oldamount = result[1].stash
@@ -123,7 +123,7 @@ end)
 VORPcore.Callback.Register('mms-oilpumps:callback:getoilfromdb', function(source,cb)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
         if result[1] ~= nil then
             oilamount = result[1].stash
@@ -138,7 +138,7 @@ end)
 VORPcore.Callback.Register('mms-oilpumps:callback:getpumplevelfromdb', function(source,cb)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
         if result[1] ~= nil then
             pumplevel = result[1].pumplevel
@@ -153,7 +153,7 @@ end)
 VORPcore.Callback.Register('mms-oilpumps:callback:getpratefromdb', function(source,cb)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
         if result[1] ~= nil then
             prate = result[1].prate
@@ -168,7 +168,7 @@ end)
 VORPcore.Callback.Register('mms-oilpumps:callback:getptimefromdb', function(source,cb)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
         if result[1] ~= nil then
             ptime = result[1].ptime
@@ -183,7 +183,7 @@ end)
 RegisterServerEvent('mms-oilpumps:server:DeletePump',function()
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
         if result[1] ~= nil then
             MySQL.execute('DELETE FROM `mms_oilpumps` WHERE identifier = ?', { identifier }, function() end)
@@ -199,7 +199,7 @@ end)
 RegisterServerEvent('mms-oilpumps:server:TakeOil',function(TakeOilAmount)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     local cancarryitems = exports.vorp_inventory:canCarryItems(src, TakeOilAmount, nil)
     local cancarryitem = exports.vorp_inventory:canCarryItem(source, Config.OilItem, TakeOilAmount, nil)
     if cancarryitem and cancarryitems then
@@ -224,7 +224,7 @@ end)
 RegisterServerEvent('mms-oilpumps:server:CheckforPump',function()
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
         if result[1] ~= nil then
             local posx = result[1].posx
@@ -239,7 +239,7 @@ end)
 RegisterServerEvent('mms-oilpumps:server:UpgradePump',function (newlevel,newrate,newtime,upgradeprice)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
+    local identifier = Character.charIdentifier
     local Money = Character.money
     
     MySQL.query('SELECT * FROM `mms_oilpumps` WHERE identifier = ?', {identifier}, function(result)
