@@ -115,7 +115,9 @@ RegisterServerEvent('mms-oilpumps:server:AddOiltoDB',function(oil)
         if result[1] ~= nil then
             local oldamount = result[1].stash
             local newamount = oldamount + oil
-            MySQL.update('UPDATE `mms_oilpumps` SET stash = ? WHERE identifier = ?',{newamount, identifier})
+                if newamount <= Config.MaxStash then
+                    MySQL.update('UPDATE `mms_oilpumps` SET stash = ? WHERE identifier = ?',{newamount, identifier})
+                end
         end
     end)
 end)
