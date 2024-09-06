@@ -585,6 +585,10 @@ if Config.Debug then
 ----- Cleaup on Resource Restart
 
 RegisterNetEvent('onResourceStop',function()
+    if (GetCurrentResourceName() ~= resourceName) then
+        return
+    end
+
     PumpTraderPed:Remove()
     PumpTraderBlip:Remove()
     if SpawnedPump then
